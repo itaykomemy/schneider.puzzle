@@ -1,1 +1,0 @@
-web: gunicorn puzzle.wsgi --preload --timeout 30
