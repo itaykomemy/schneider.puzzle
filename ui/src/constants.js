@@ -1,2 +1,2 @@
-export const PuzzleHeight = 140
-export const PuzzleWidth = 200
+export const PuzzleHeight = 200
+export const PuzzleWidth = 300
