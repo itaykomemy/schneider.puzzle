@@ -25,7 +25,10 @@ class Command(BaseCommand):
         donors = []
         for i in range(0, count):
             faked_name = fake.name().split(' ')
-            donor = Donor(first_name=faked_name[0], last_name=faked_name[1])
+            donor = Donor(
+                first_name=faked_name[0],
+                last_name=faked_name[1],
+                serial=i)
             donors.append(donor)
 
         Donor.objects.bulk_create(donors)

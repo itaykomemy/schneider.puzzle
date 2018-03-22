@@ -14,6 +14,7 @@ def get_random_order():
 class Donor(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    serial = models.CharField(max_length=100, unique=True, db_index=True)
     order0 = models.BigIntegerField(default=get_random_order)
     order1 = models.BigIntegerField(default=get_random_order)
     order2 = models.BigIntegerField(default=get_random_order)
@@ -36,4 +37,5 @@ class DonorSerializer(serializers.BaseSerializer):
             'id': obj.id,
             'firstName': obj.first_name,
             'lastName': obj.last_name,
+            'serial': obj.serial
         }
