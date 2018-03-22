@@ -28,7 +28,11 @@ class Donor(models.Model):
         return self.first_name + ' ' + self.last_name
 
 
-admin.site.register(Donor)
+class DonorAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'last_name', 'serial')
+
+
+admin.site.register(Donor, DonorAdmin)
 
 
 class DonorSerializer(serializers.BaseSerializer):
