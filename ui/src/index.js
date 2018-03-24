@@ -3,12 +3,12 @@ import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
 import {getPage} from './api'
 import App from './App'
+import {DonorTag} from './canvas/DonorTag'
 import {JigsawWidth, PuzzleHeight, PuzzleWidth} from './constants'
+import {getDonors, getMockedDonors} from './mock/donors'
 import registerServiceWorker from './registerServiceWorker';
 
 import * as PIXI from 'pixi.js'
-
-getPage(0).then(({results}) => console.dir(results))
 
 registerServiceWorker();
 
@@ -175,8 +175,8 @@ app.stage
     .on('mousemove', onDragMove)
     .on('touchmove', onDragMove)
 
-app.stage.x = -SCREEN_W - ((SPARE_PZL_PARTS / 2) * PuzzleWidth)
-app.stage.y = -SCREEN_H - ((SPARE_PZL_PARTS / 2) * PuzzleHeight)
+app.stage.x = - (horizCount + (SPARE_PZL_PARTS / 2)) * PuzzleWidth
+app.stage.y = - (vertCount + (SPARE_PZL_PARTS / 2)) * PuzzleHeight
 app.stage.interactive = true
 app.stage.hitArea = new PIXI.Rectangle(0, 0, app.stage.width, app.stage.height)
 
@@ -188,3 +188,33 @@ render(
     document.getElementById('app'),
 )
 
+
+const tags = []
+for (let i = 0; i < horizCount; i++) {
+    for (let j = 0; j < vertCount; j++) {
+        tags.push(
+            new DonorTag(
+                -xZero + PuzzleWidth * i + PuzzleWidth / 2,
+                -yZero + PuzzleHeight * j + PuzzleHeight / 2,
+                app.stage
+            ))
+    }
+}
+
+const MOCK = true
+// const MOCK = false
+
+if (MOCK) {
+    console.warn('MOCK is True')
+}
+
+const donorsPromise = MOCK ? getMockedDonors() : getPage(0)
+
+donorsPromise.then(({results}) => {
+    results.map((donor, i) => {
+        const tag = tags[i]
+        if (tag) {
+            tag.setDonor(donor)
+        }
+    })
+})
