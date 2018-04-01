@@ -13,6 +13,8 @@ export const calcScreenCapacity = () => {
 
     verticalCapacity = Math.ceil(height / PuzzleHeight)
     horizontalCapacity = Math.ceil(width / PuzzleWidth)
+    frameWidth = PuzzleWidth * horizontalCapacity
+    frameHeight = PuzzleHeight * verticalCapacity
 }
 
 export function getStage() {
@@ -26,6 +28,12 @@ export function getScreenSize() {
     }
 }
 
-export let verticalCapacity,
-    horizontalCapacity
+export let
+    verticalCapacity,
+    horizontalCapacity,
+    frameWidth,
+    frameHeight
+
+// to each side
+export const EXTRA_FRAMES = 2
 

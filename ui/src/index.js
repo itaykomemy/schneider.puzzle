@@ -4,6 +4,7 @@ import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
 import {getPage} from './api'
 import App from './App'
+import {frameWidth} from './canvas/Context'
 import * as Context from './canvas/Context'
 import {horizontalCapacity, verticalCapacity} from './canvas/Context'
 import Frame from './canvas/Frame'
@@ -189,5 +190,11 @@ render(
 const donorsPromise = MOCK ? getMockedDonors() : getPage(0)
 
 const frame0 = new Frame(xZero, yZero)
+const frame1 = new Frame(xZero - frameWidth, yZero)
+const frame2 = new Frame(xZero + frameWidth, yZero)
 
-donorsPromise.then(({results}) => frame0.render(results))
+donorsPromise.then(({results}) => {
+    frame0.render(results)
+    frame1.render(results)
+    frame2.render(results)
+})
