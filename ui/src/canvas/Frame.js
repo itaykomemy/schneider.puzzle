@@ -23,7 +23,7 @@ export default class Frame {
     }
 
     render(donors) {
-        donors.map((donor, i) => {
+        donors.forEach((donor, i) => {
             const tag = this.tags[i]
             if (tag) {
                 tag.setDonor(donor)
