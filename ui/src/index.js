@@ -7,6 +7,7 @@ import App from './App'
 import * as Context from './canvas/Context'
 import {horizontalCapacity, verticalCapacity} from './canvas/Context'
 import Frame from './canvas/Frame'
+import {MOCK} from './config'
 import {JigsawWidth, PuzzleHeight, PuzzleWidth} from './constants'
 import {getDonors, getMockedDonors} from './mock/donors'
 import registerServiceWorker from './registerServiceWorker'
@@ -184,13 +185,6 @@ render(
     <App/>,
     document.getElementById('app'),
 )
-
-// const MOCK = true
-const MOCK = false
-
-if (MOCK) {
-    console.warn('MOCK is True')
-}
 
 const donorsPromise = MOCK ? getMockedDonors() : getPage(0)
 
