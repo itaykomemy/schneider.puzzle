@@ -1,14 +1,15 @@
+import * as PIXI from 'pixi.js'
 import React from 'react'
 import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
 import {getPage} from './api'
 import App from './App'
-import {DonorTag} from './canvas/DonorTag'
+import * as Context from './canvas/Context'
+import {horizontalCapacity, verticalCapacity} from './canvas/Context'
+import Frame from './canvas/Frame'
 import {JigsawWidth, PuzzleHeight, PuzzleWidth} from './constants'
 import {getDonors, getMockedDonors} from './mock/donors'
-import registerServiceWorker from './registerServiceWorker';
-
-import * as PIXI from 'pixi.js'
+import registerServiceWorker from './registerServiceWorker'
 
 registerServiceWorker();
 
@@ -23,9 +24,6 @@ injectGlobal`
   }
 `
 
-const SCREEN_W = screen.width, SCREEN_H = screen.height // eslint-disable-line no-restricted-globals
-console.debug('screen size', SCREEN_W, SCREEN_H)
-
 const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -34,6 +32,8 @@ const app = new PIXI.Application({
     resolution: window.devicePixelRatio,
     backgroundColor: 0xffffff,
 })
+
+Context.init(app)
 
 document.body.insertBefore(app.view, document.body.firstChild)
 app.renderer.view.style.position = "absolute";
@@ -103,9 +103,6 @@ const drawRows = (y, count, container) => {
     }
 }
 
-const horizCount = Math.ceil(SCREEN_W / PuzzleWidth),
-    vertCount = Math.ceil(SCREEN_H / PuzzleHeight)
-
 function onDragStart(event) {
     console.debug(event)
     this.isDragging = true
@@ -131,14 +128,14 @@ function onDragMove(event) {
         const newstagex = app.stage.localTransform.tx - mouseDistanceX
         const newstagey = app.stage.localTransform.ty - mouseDistanceY
 
-        if (xZero - newstagex > PuzzleWidth * horizCount) {
-            app.stage.setTransform(newstagex + PuzzleWidth * horizCount, newstagey)
-        } else if (xZero - newstagex < -PuzzleWidth * horizCount) {
-            app.stage.setTransform(newstagex - PuzzleWidth * horizCount, newstagey)
-        } else if (yZero - newstagey > PuzzleHeight * vertCount) {
-            app.stage.setTransform(newstagex, newstagey + PuzzleHeight * vertCount)
-        } else if (yZero - newstagey < -PuzzleHeight * vertCount) {
-            app.stage.setTransform(newstagex, newstagey - PuzzleHeight * vertCount)
+        if (xZero - newstagex > PuzzleWidth * horizontalCapacity) {
+            app.stage.setTransform(newstagex + PuzzleWidth * horizontalCapacity, newstagey)
+        } else if (xZero - newstagex < -PuzzleWidth * horizontalCapacity) {
+            app.stage.setTransform(newstagex - PuzzleWidth * horizontalCapacity, newstagey)
+        } else if (yZero - newstagey > PuzzleHeight * verticalCapacity) {
+            app.stage.setTransform(newstagex, newstagey + PuzzleHeight * verticalCapacity)
+        } else if (yZero - newstagey < -PuzzleHeight * verticalCapacity) {
+            app.stage.setTransform(newstagex, newstagey - PuzzleHeight * verticalCapacity)
         } else {
             app.stage.setTransform(newstagex, newstagey)
         }
@@ -153,8 +150,8 @@ function onDragMove(event) {
 
 const
     SPARE_PZL_PARTS = 10,
-    TotalHorizCount = horizCount * 3 + SPARE_PZL_PARTS,
-    TotalVertCount = vertCount * 3 + SPARE_PZL_PARTS
+    TotalHorizCount = horizontalCapacity * 3 + SPARE_PZL_PARTS,
+    TotalVertCount = verticalCapacity * 3 + SPARE_PZL_PARTS
 
 for (let i = 0; i < TotalVertCount; i++) {
     drawRows(i * PuzzleHeight, TotalHorizCount, app.stage)
@@ -175,8 +172,8 @@ app.stage
     .on('mousemove', onDragMove)
     .on('touchmove', onDragMove)
 
-app.stage.x = - (horizCount + (SPARE_PZL_PARTS / 2)) * PuzzleWidth
-app.stage.y = - (vertCount + (SPARE_PZL_PARTS / 2)) * PuzzleHeight
+app.stage.x = - (horizontalCapacity + (SPARE_PZL_PARTS / 2)) * PuzzleWidth
+app.stage.y = - (verticalCapacity + (SPARE_PZL_PARTS / 2)) * PuzzleHeight
 app.stage.interactive = true
 app.stage.hitArea = new PIXI.Rectangle(0, 0, app.stage.width, app.stage.height)
 
@@ -188,21 +185,8 @@ render(
     document.getElementById('app'),
 )
 
-
-const tags = []
-for (let i = 0; i < horizCount; i++) {
-    for (let j = 0; j < vertCount; j++) {
-        tags.push(
-            new DonorTag(
-                -xZero + PuzzleWidth * i + PuzzleWidth / 2,
-                -yZero + PuzzleHeight * j + PuzzleHeight / 2,
-                app.stage
-            ))
-    }
-}
-
-const MOCK = true
-// const MOCK = false
+// const MOCK = true
+const MOCK = false
 
 if (MOCK) {
     console.warn('MOCK is True')
@@ -210,11 +194,6 @@ if (MOCK) {
 
 const donorsPromise = MOCK ? getMockedDonors() : getPage(0)
 
-donorsPromise.then(({results}) => {
-    results.map((donor, i) => {
-        const tag = tags[i]
-        if (tag) {
-            tag.setDonor(donor)
-        }
-    })
-})
+const frame0 = new Frame(xZero, yZero)
+
+donorsPromise.then(({results}) => frame0.render(results))

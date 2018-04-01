@@ -1,16 +1,7 @@
-import {PuzzleWidth, PuzzleHeight} from './constants'
+import {horizontalCapacity, verticalCapacity} from './canvas/Context'
 
-export const calcScreenCapacity = () => {
-    const h = window.innerHeight,
-        w = window.innerWidth
-
-    const vertical = Math.ceil(h / PuzzleHeight),
-        horizontal = Math.ceil(w / PuzzleWidth)
-
-    return vertical * horizontal
+export const getPage = page => {
+    const limit = horizontalCapacity * verticalCapacity
+    return fetch(`/donors/?limit=${limit}&offset=${page * limit}`)
+        .then(res => res.json())
 }
-
-const limit = calcScreenCapacity()
-
-export const getPage = page => fetch(`/donors/?limit=${limit}&offset=${page * limit}`)
-    .then(res => res.json())
