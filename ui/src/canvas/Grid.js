@@ -1,5 +1,5 @@
-import {frameHeight, frameWidth, getStage} from './Context'
 import * as Context from './Context'
+import {frameHeight, frameWidth} from './Context'
 import Frame from './Frame'
 
 
