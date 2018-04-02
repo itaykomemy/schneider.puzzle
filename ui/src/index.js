@@ -4,16 +4,17 @@ import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
 import {getPage} from './api'
 import App from './App'
-import {frameWidth} from './canvas/Context'
+import {frameHeight, frameWidth} from './canvas/Context'
 import * as Context from './canvas/Context'
 import {horizontalCapacity, verticalCapacity} from './canvas/Context'
 import Frame from './canvas/Frame'
+import Grid from './canvas/Grid'
 import {MOCK} from './config'
 import {JigsawWidth, PuzzleHeight, PuzzleWidth} from './constants'
 import {getDonors, getMockedDonors} from './mock/donors'
 import registerServiceWorker from './registerServiceWorker'
 
-registerServiceWorker();
+registerServiceWorker()
 
 injectGlobal`
   * {
@@ -38,9 +39,9 @@ const app = new PIXI.Application({
 Context.init(app)
 
 document.body.insertBefore(app.view, document.body.firstChild)
-app.renderer.view.style.position = "absolute";
-app.renderer.view.style.display = "block";
-app.renderer.autoResize = true;
+app.renderer.view.style.position = "absolute"
+app.renderer.view.style.display = "block"
+app.renderer.autoResize = true
 window.addEventListener('resize', () => app.renderer.resize(window.innerWidth, window.innerHeight))
 
 const G = PIXI.Graphics
@@ -130,14 +131,14 @@ function onDragMove(event) {
         const newstagex = app.stage.localTransform.tx - mouseDistanceX
         const newstagey = app.stage.localTransform.ty - mouseDistanceY
 
-        if (xZero - newstagex > PuzzleWidth * horizontalCapacity) {
-            app.stage.setTransform(newstagex + PuzzleWidth * horizontalCapacity, newstagey)
-        } else if (xZero - newstagex < -PuzzleWidth * horizontalCapacity) {
-            app.stage.setTransform(newstagex - PuzzleWidth * horizontalCapacity, newstagey)
-        } else if (yZero - newstagey > PuzzleHeight * verticalCapacity) {
-            app.stage.setTransform(newstagex, newstagey + PuzzleHeight * verticalCapacity)
-        } else if (yZero - newstagey < -PuzzleHeight * verticalCapacity) {
-            app.stage.setTransform(newstagex, newstagey - PuzzleHeight * verticalCapacity)
+        if (xZero - newstagex > frameWidth * 2) {
+            app.stage.setTransform(newstagex + frameWidth * 2, newstagey)
+        } else if (xZero - newstagex < -frameWidth * 2) {
+            app.stage.setTransform(newstagex - frameWidth * 2, newstagey)
+        } else if (yZero - newstagey > frameHeight * 2) {
+            app.stage.setTransform(newstagex, newstagey + frameHeight * 2)
+        } else if (yZero - newstagey < -frameHeight * 2) {
+            app.stage.setTransform(newstagex, newstagey - frameHeight * 2)
         } else {
             app.stage.setTransform(newstagex, newstagey)
         }
@@ -151,9 +152,8 @@ function onDragMove(event) {
 }
 
 const
-    SPARE_PZL_PARTS = 10,
-    TotalHorizCount = horizontalCapacity * 3 + SPARE_PZL_PARTS,
-    TotalVertCount = verticalCapacity * 3 + SPARE_PZL_PARTS
+    TotalHorizCount = horizontalCapacity * 5,
+    TotalVertCount = verticalCapacity * 5
 
 for (let i = 0; i < TotalVertCount; i++) {
     drawRows(i * PuzzleHeight, TotalHorizCount, app.stage)
@@ -174,8 +174,8 @@ app.stage
     .on('mousemove', onDragMove)
     .on('touchmove', onDragMove)
 
-app.stage.x = - (horizontalCapacity + (SPARE_PZL_PARTS / 2)) * PuzzleWidth
-app.stage.y = - (verticalCapacity + (SPARE_PZL_PARTS / 2)) * PuzzleHeight
+app.stage.x = -2 * frameWidth
+app.stage.y = -2 * frameHeight
 app.stage.interactive = true
 app.stage.hitArea = new PIXI.Rectangle(0, 0, app.stage.width, app.stage.height)
 
@@ -189,12 +189,12 @@ render(
 
 const donorsPromise = MOCK ? getMockedDonors() : getPage(0)
 
-const frame0 = new Frame(xZero, yZero)
-const frame1 = new Frame(xZero - frameWidth, yZero)
-const frame2 = new Frame(xZero + frameWidth, yZero)
+const grid = new Grid()
 
 donorsPromise.then(({results}) => {
-    frame0.render(results)
-    frame1.render(results)
-    frame2.render(results)
+    grid.render(2, 0, results)
+    grid.render(2, 2, results)
+    grid.render(2, 4, results)
+    grid.render(0, 2, results)
+    grid.render(4, 2, results)
 })

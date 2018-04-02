@@ -35,5 +35,5 @@ export let
     frameHeight
 
 // to each side
-export const EXTRA_FRAMES = 2
+export const GRID_RANK = 5
 

@@ -14,8 +14,8 @@ export default class Frame {
             for (let j = 0; j < verticalCapacity; j++) {
                 this.tags.push(
                     new DonorTag(
-                        -this.zerox + PuzzleWidth * i + PuzzleWidth / 2,
-                        -this.zeroy + PuzzleHeight * j + PuzzleHeight / 2,
+                        this.zerox + PuzzleWidth * i + PuzzleWidth / 2,
+                        this.zeroy + PuzzleHeight * j + PuzzleHeight / 2,
                         stage
                     ))
             }
