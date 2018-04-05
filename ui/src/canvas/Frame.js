@@ -22,7 +22,17 @@ export default class Frame {
         }
     }
 
+    moveDonorsToFrame(recepientFrame) {
+        recepientFrame.render(this.data)
+        this.clear()
+    }
+
+    clear() {
+        this.tags.forEach(t => t.clear())
+    }
+
     render(donors) {
+        this.data = donors
         donors.forEach((donor, i) => {
             const tag = this.tags[i]
             if (tag) {

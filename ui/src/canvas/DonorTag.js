@@ -12,6 +12,10 @@ export class DonorTag {
         container.addChild(this.textObject)
     }
 
+    clear() {
+        this.textObject.text = ''
+    }
+
     setDonor(donor) {
         this._donor = donor
         this.firstName = donor.firstName

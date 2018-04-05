@@ -4,10 +4,8 @@ import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
 import {getPage} from './api'
 import App from './App'
-import {frameHeight, frameWidth} from './canvas/Context'
 import * as Context from './canvas/Context'
-import {horizontalCapacity, verticalCapacity} from './canvas/Context'
-import Frame from './canvas/Frame'
+import {frameHeight, frameWidth, horizontalCapacity, verticalCapacity} from './canvas/Context'
 import Grid from './canvas/Grid'
 import {MOCK} from './config'
 import {JigsawWidth, PuzzleHeight, PuzzleWidth} from './constants'
@@ -107,14 +105,12 @@ const drawRows = (y, count, container) => {
 }
 
 function onDragStart(event) {
-    console.debug(event)
     this.isDragging = true
     this.startX = event.data.originalEvent.screenX
     this.startY = event.data.originalEvent.screenY
 }
 
 function onDragEnd(event) {
-    console.debug(event)
     this.isDragging = false
 }
 
@@ -133,21 +129,19 @@ function onDragMove(event) {
 
         if (xZero - newstagex > frameWidth * 2) {
             app.stage.setTransform(newstagex + frameWidth * 2, newstagey)
+            grid.resetRight()
         } else if (xZero - newstagex < -frameWidth * 2) {
             app.stage.setTransform(newstagex - frameWidth * 2, newstagey)
+            grid.resetLeft()
         } else if (yZero - newstagey > frameHeight * 2) {
             app.stage.setTransform(newstagex, newstagey + frameHeight * 2)
+            grid.resetDown()
         } else if (yZero - newstagey < -frameHeight * 2) {
             app.stage.setTransform(newstagex, newstagey - frameHeight * 2)
+            grid.resetUp()
         } else {
             app.stage.setTransform(newstagex, newstagey)
         }
-
-        console.debug(
-            'stage offset',
-            xZero - app.stage.x,
-            yZero - app.stage.y
-        )
     }
 }
 
@@ -190,11 +184,8 @@ render(
 const donorsPromise = MOCK ? getMockedDonors() : getPage(0)
 
 const grid = new Grid()
-
 donorsPromise.then(({results}) => {
-    grid.render(2, 0, results)
-    grid.render(2, 2, results)
-    grid.render(2, 4, results)
-    grid.render(0, 2, results)
-    grid.render(4, 2, results)
+    grid.traverse((frame, i, j) => {
+        frame.render(results)
+    })
 })

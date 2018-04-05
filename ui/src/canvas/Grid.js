@@ -20,7 +20,55 @@ export default class Grid {
         }
     }
 
-    render(i, j, donors) {
-        this._frames[i][j].render(donors)
+    traverse(fn) {
+        this.traverseWithinBoundaries(0, Context.GRID_RANK, 0, Context.GRID_RANK, fn)
+    }
+
+    traverseWithinBoundaries(fromRow, toRow, fromColumn, toColumn, fn) {
+        if (!(fn && fn.apply)) return
+
+        for (let i = fromRow; i < toRow; i++)
+            for (let j = fromColumn; j < toColumn; j++)
+                fn(this._frames[i][j], i, j)
+    }
+
+    resetRight() {
+        for (let i = 0; i < Context.GRID_RANK; i++) {
+            for (let j = 0; j < Context.GRID_RANK - 2; j++) {
+                const frame = this._frames[i][j]
+                const f2 = this._frames[i][j + 2]
+                f2.moveDonorsToFrame(frame)
+            }
+        }
+    }
+
+    resetLeft() {
+        for (let i = 0; i < Context.GRID_RANK; i++) {
+            for (let j = Context.GRID_RANK - 1; j > 1; j--) {
+                const frame = this._frames[i][j]
+                const f2 = this._frames[i][j - 2]
+                f2.moveDonorsToFrame(frame)
+            }
+        }
+    }
+
+    resetUp() {
+        for (let i = Context.GRID_RANK - 1; i > 1; i--) {
+            for (let j = 0; j < Context.GRID_RANK; j++) {
+                const frame = this._frames[i][j]
+                const f2 = this._frames[i - 2][j]
+                f2.moveDonorsToFrame(frame)
+            }
+        }
+    }
+
+    resetDown() {
+        for (let i = 0; i < Context.GRID_RANK - 2; i++) {
+            for (let j = 0; j < Context.GRID_RANK; j++) {
+                const frame = this._frames[i][j]
+                const f2 = this._frames[i + 2][j]
+                f2.moveDonorsToFrame(frame)
+            }
+        }
     }
 }
