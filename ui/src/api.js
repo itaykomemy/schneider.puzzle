@@ -1,7 +1,4 @@
-import {horizontalCapacity, verticalCapacity} from './canvas/Context'
-
-export const getPage = page => {
-    const limit = horizontalCapacity * verticalCapacity
-    return fetch(`/donors/?limit=${limit}&offset=${page * limit}`)
+export const fetchDonors = (startAt, count) => {
+    return fetch(`/donors/?limit=${count}&offset=${startAt}`)
         .then(res => res.json())
 }

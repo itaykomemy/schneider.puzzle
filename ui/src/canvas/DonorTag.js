@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import {FontSize} from '../constants'
 
 
 export class DonorTag {
@@ -7,7 +8,7 @@ export class DonorTag {
         this._x = x
         this._y = y
 
-        this.textObject = new PIXI.Text("", {align: 'center'})
+        this.textObject = new PIXI.Text("", {align: 'center', fontSize: FontSize})
 
         container.addChild(this.textObject)
     }

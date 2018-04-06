@@ -2,6 +2,7 @@ import {PuzzleHeight, PuzzleWidth} from '../constants'
 import * as Context from './Context'
 import {horizontalCapacity, verticalCapacity} from './Context'
 import {DonorTag} from './DonorTag'
+import * as DonorLoader from '../DonorLoader'
 
 export default class Frame {
     constructor(zerox, zeroy) {
@@ -29,6 +30,12 @@ export default class Frame {
 
     clear() {
         this.tags.forEach(t => t.clear())
+    }
+
+    loadNext() {
+        DonorLoader.fetchDonors(horizontalCapacity * verticalCapacity).then(
+            ({results}) => this.render(results)
+        )
     }
 
     render(donors) {

@@ -2,13 +2,15 @@ import * as PIXI from 'pixi.js'
 import React from 'react'
 import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
-import {getPage} from './api'
+import {fetchDonors, getPage} from './api'
 import App from './App'
+import {GRID_RANK} from './canvas/Context'
 import * as Context from './canvas/Context'
 import {frameHeight, frameWidth, horizontalCapacity, verticalCapacity} from './canvas/Context'
 import Grid from './canvas/Grid'
-import {MOCK} from './config'
+import {MOCK} from './Config'
 import {JigsawWidth, PuzzleHeight, PuzzleWidth} from './constants'
+import * as DonorLoader from './DonorLoader'
 import {getDonors, getMockedDonors} from './mock/donors'
 import registerServiceWorker from './registerServiceWorker'
 
@@ -181,11 +183,14 @@ render(
     document.getElementById('app'),
 )
 
-const donorsPromise = MOCK ? getMockedDonors() : getPage(0)
-
+const donorsPromise = DonorLoader.fetchDonors(verticalCapacity * horizontalCapacity * GRID_RANK * GRID_RANK)
 const grid = new Grid()
+
 donorsPromise.then(({results}) => {
+    let s = 0
     grid.traverse((frame, i, j) => {
-        frame.render(results)
+        const os = s
+        s += verticalCapacity * horizontalCapacity
+        frame.render(results.slice(os, s))
     })
 })

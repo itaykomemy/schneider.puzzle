@@ -38,6 +38,7 @@ export default class Grid {
                 const frame = this._frames[i][j]
                 const f2 = this._frames[i][j + 2]
                 f2.moveDonorsToFrame(frame)
+                f2.loadNext()
             }
         }
     }
@@ -48,6 +49,7 @@ export default class Grid {
                 const frame = this._frames[i][j]
                 const f2 = this._frames[i][j - 2]
                 f2.moveDonorsToFrame(frame)
+                f2.loadNext()
             }
         }
     }
@@ -58,6 +60,7 @@ export default class Grid {
                 const frame = this._frames[i][j]
                 const f2 = this._frames[i - 2][j]
                 f2.moveDonorsToFrame(frame)
+                f2.loadNext()
             }
         }
     }
@@ -68,6 +71,7 @@ export default class Grid {
                 const frame = this._frames[i][j]
                 const f2 = this._frames[i + 2][j]
                 f2.moveDonorsToFrame(frame)
+                f2.loadNext()
             }
         }
     }
