@@ -2,16 +2,23 @@ import * as PIXI from 'pixi.js'
 import React from 'react'
 import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
-import {fetchDonors, getPage} from './api'
+import {getPage} from './api'
 import App from './App'
-import {GRID_RANK} from './canvas/Context'
 import * as Context from './canvas/Context'
-import {frameHeight, frameWidth, horizontalCapacity, verticalCapacity} from './canvas/Context'
+import {
+    frameHeight,
+    frameWidth,
+    GRID_RANK,
+    horizontalCapacity,
+    verticalCapacity
+} from './canvas/Context'
 import Grid from './canvas/Grid'
-import {MOCK} from './Config'
-import {JigsawWidth, PuzzleHeight, PuzzleWidth} from './constants'
+import {
+    JigsawWidth,
+    PuzzleHeight,
+    PuzzleWidth
+} from './constants'
 import * as DonorLoader from './DonorLoader'
-import {getDonors, getMockedDonors} from './mock/donors'
 import registerServiceWorker from './registerServiceWorker'
 
 registerServiceWorker()
