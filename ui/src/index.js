@@ -2,7 +2,6 @@ import * as PIXI from 'pixi.js'
 import React from 'react'
 import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
-import {getPage} from './api'
 import App from './App'
 import * as Context from './canvas/Context'
 import {
