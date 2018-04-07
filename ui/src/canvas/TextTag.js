@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import {FontSize} from '../constants'
 
 
-export class DonorTag {
+export class TextTag {
 
     constructor(x, y, container) {
         this._x = x
@@ -13,18 +13,18 @@ export class DonorTag {
         container.addChild(this.textObject)
     }
 
+    setText(text) {
+        this.textObject.text = text
+    }
+
     clear() {
         this.textObject.text = ''
     }
 
     setDonor(donor) {
-        this._donor = donor
-        this.firstName = donor.firstName
-        this.lastName = donor.lastName
-        this.id = donor.id
-        this.serial = donor.serial
+        const {firstName, lastName, serial} = donor
 
-        this.textObject.text = `${this.firstName} ${this.lastName}\n${this.serial}`
+        this.textObject.text = `${firstName} ${lastName}\n${serial}`
 
         this.textObject.x = this._x - this.textObject.width / 2
         this.textObject.y = this._y - this.textObject.height / 2

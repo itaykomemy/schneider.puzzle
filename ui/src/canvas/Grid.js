@@ -1,5 +1,8 @@
 import * as Context from './Context'
-import {frameHeight, frameWidth} from './Context'
+import {
+    frameHeight,
+    frameWidth
+} from './Context'
 import Frame from './Frame'
 
 
@@ -35,10 +38,7 @@ export default class Grid {
     resetRight() {
         for (let i = 0; i < Context.GRID_RANK; i++) {
             for (let j = 0; j < Context.GRID_RANK - 2; j++) {
-                const frame = this._frames[i][j]
-                const f2 = this._frames[i][j + 2]
-                f2.moveDonorsToFrame(frame)
-                f2.loadNext()
+                this.switchFrames(i, j, i, j + 2)
             }
         }
     }
@@ -46,10 +46,7 @@ export default class Grid {
     resetLeft() {
         for (let i = 0; i < Context.GRID_RANK; i++) {
             for (let j = Context.GRID_RANK - 1; j > 1; j--) {
-                const frame = this._frames[i][j]
-                const f2 = this._frames[i][j - 2]
-                f2.moveDonorsToFrame(frame)
-                f2.loadNext()
+                this.switchFrames(i, j, i, j - 2)
             }
         }
     }
@@ -57,10 +54,7 @@ export default class Grid {
     resetUp() {
         for (let i = Context.GRID_RANK - 1; i > 1; i--) {
             for (let j = 0; j < Context.GRID_RANK; j++) {
-                const frame = this._frames[i][j]
-                const f2 = this._frames[i - 2][j]
-                f2.moveDonorsToFrame(frame)
-                f2.loadNext()
+                this.switchFrames(i, j, i - 2, j)
             }
         }
     }
@@ -68,11 +62,24 @@ export default class Grid {
     resetDown() {
         for (let i = 0; i < Context.GRID_RANK - 2; i++) {
             for (let j = 0; j < Context.GRID_RANK; j++) {
-                const frame = this._frames[i][j]
-                const f2 = this._frames[i + 2][j]
-                f2.moveDonorsToFrame(frame)
-                f2.loadNext()
+                this.switchFrames(i, j, i + 2, j)
             }
+        }
+    }
+
+    switchFrames(i1, j1, i2, j2, loadNext = true) {
+        const f1 = this._frames[i1][j1]
+        const f2 = this._frames[i2][j2]
+        const {x: x1, y: y1} = f1.getPosition()
+        const {x: x2, y: y2} = f2.getPosition()
+
+        f2.setPosition(x1, y1)
+        this._frames[i1][j1] = f2
+
+        f1.setPosition(x2, y2)
+        this._frames[i2][j2] = f1
+        if (loadNext) {
+            f1.loadNext()
         }
     }
 }
