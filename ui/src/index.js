@@ -18,9 +18,6 @@ import {
     PuzzleWidth
 } from './constants'
 import * as DonorLoader from './DonorLoader'
-import registerServiceWorker from './registerServiceWorker'
-
-registerServiceWorker()
 
 injectGlobal`
   body {
