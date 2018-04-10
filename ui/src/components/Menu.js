@@ -1,14 +1,19 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import Button from './Button'
 
 class Menu extends Component {
-    static propTypes = {};
+    static propTypes = {
+        onSearchClickHandler: PropTypes.func.isRequired
+    }
+
     static defaultProps = {}
 
     render() {
         return (
             <div className={this.props.className}>
-                <input type="text" placeholder="חפש"/>
+                <Button onClick={this.props.onSearchClickHandler}>&#x1f50d;</Button>
             </div>
         );
     }
@@ -18,11 +23,9 @@ class Menu extends Component {
 export default styled(Menu)`
   height: 2em;
   line-height: 2em;
-  box-shadow: gray 1px 1px 1px  1px;
-  input {
-    border: none;
-    pointer-events: all;
-    height: 100%;
-    width: 100%;
-  }   
+  pointer-events: all;
+  :hover {
+    transform: scale(1.2);
+    transition: transform 50ms linear;
+  }
 `
