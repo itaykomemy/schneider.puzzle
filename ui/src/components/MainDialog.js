@@ -72,7 +72,7 @@ export default styled(MainDialog)`
   .dialog {
     position: relative;
     width: 30%;
-    margin: 20% auto 0 auto; 
+    margin: 20vh auto 0 auto; 
     background: white;
     padding: 2em 1em 1em 1em;
     box-shadow: black 1px 1px 1px;
