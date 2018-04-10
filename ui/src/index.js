@@ -23,6 +23,10 @@ import registerServiceWorker from './registerServiceWorker'
 registerServiceWorker()
 
 injectGlobal`
+  body {
+    font-family: 'Assistant', sans-serif;
+  }
+
   * {
     margin: 0;
     padding: 0;
