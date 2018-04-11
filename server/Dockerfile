@@ -6,4 +6,6 @@ ADD requirements.txt /code/
 RUN pip install -r requirements.txt
 ADD . /code/
 RUN python3 /code/manage.py collectstatic --noinput
-CMD /code/scripts/start.sh
+EXPOSE 8000/tcp
+RUN chmod +x /code/scripts/start.sh
+ENTRYPOINT /code/scripts/start.sh
