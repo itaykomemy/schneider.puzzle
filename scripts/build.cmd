@@ -1,0 +1,1 @@
+cd ui && npm run build && cd .. && scripts\build-docker.cmd

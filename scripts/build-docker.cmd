@@ -1,0 +1,1 @@
+docker build -t itayky/ourpuzzle:latest .

@@ -20,12 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'u0i5$vytl!h^i58&b=y)ham!e+3bc)h3okx8zx$0$x248n9ztx'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY', 'u0i5$vytl!h^i58&b=y)ham!e+3bc)h3okx8zx$0$x248n9ztx')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', False) == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -78,7 +79,8 @@ WSGI_APPLICATION = 'puzzle.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(
+            os.environ.get('DB_PATH'), 'db.sqlite3'),
     }
 }
 
@@ -118,8 +120,5 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = '/static/'
-
-ALLOWED_HOSTS = ['*']
+STATIC_URL = '/django_static/'
+STATIC_ROOT = '/home/docker/django_static/'
