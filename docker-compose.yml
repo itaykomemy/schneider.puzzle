@@ -3,10 +3,12 @@ version: '3'
 services:
   web:
     build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: python /home/docker/code/app/manage.py runserver 0.0.0.0:8000
     environment: 
       - DEBUG=True
+      - DB_PATH=/home/docker/db
     volumes:
+      - ./server/:/home/docker/code/app/
       - ./db:/home/docker/db
     ports:
       - "8000:8000/tcp"
