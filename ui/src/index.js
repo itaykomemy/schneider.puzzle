@@ -200,11 +200,17 @@ render(
 const donorsPromise = DonorLoader.fetchDonors(verticalCapacity * horizontalCapacity * GRID_RANK * GRID_RANK)
 const grid = new Grid()
 
+const size = verticalCapacity * horizontalCapacity
 donorsPromise.then(({results}) => {
-    let s = 0
+    // reserve the first batch of donors for the center frame
+    let start = size
     grid.traverse((frame, i, j) => {
-        const os = s
-        s += verticalCapacity * horizontalCapacity
-        frame.render(results.slice(os, s))
+        // put the first batch of the donors on the center frame
+        if (i === 2 && j === 2) {
+            frame.render(results.slice(0, size))
+        } else {
+            frame.render(results.slice(start, start + size))
+            start += size
+        }
     })
 })
