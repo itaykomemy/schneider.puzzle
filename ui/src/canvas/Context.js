@@ -1,10 +1,12 @@
 import {PuzzleHeight, PuzzleWidth} from '../constants'
 
-
-let a
+const context = {
+    app: null,
+    grid: null,
+}
 
 export function init(app) {
-    a = app
+    context.app = app
     calcScreenCapacity()
 }
 
@@ -18,7 +20,7 @@ export const calcScreenCapacity = () => {
 }
 
 export function getStage() {
-    return a.stage
+    return context.app.stage
 }
 
 export function getScreenSize() {
@@ -37,3 +39,8 @@ export let
 // to each side
 export const GRID_RANK = 5
 
+export const setGrid = grid => {
+    context.grid = grid
+}
+
+export const getGrid = () => context.grid

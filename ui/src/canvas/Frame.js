@@ -1,8 +1,14 @@
 import * as PIXI from 'pixi.js'
 import {DEBUG} from '../Config'
-import {PuzzleHeight, PuzzleWidth} from '../constants'
+import {
+    PuzzleHeight,
+    PuzzleWidth
+} from '../constants'
 import * as Context from './Context'
-import {horizontalCapacity, verticalCapacity} from './Context'
+import {
+    horizontalCapacity,
+    verticalCapacity
+} from './Context'
 import {TextTag} from './TextTag'
 import * as DonorLoader from '../DonorLoader'
 
@@ -50,14 +56,26 @@ export default class Frame {
         this.clear()
     }
 
+    selectDonor(donor) {
+        const baseIndex = verticalCapacity * horizontalCapacity / 2
+        const vrand = Math.ceil(4 * Math.random() - 2)
+        const hrand = Math.ceil(4 * Math.random() - 2)
+        const index = Math.floor(baseIndex + vrand + (verticalCapacity * hrand))
+        const tag = this.tags[index]
+
+        return this.loadNext().then(() => {
+            tag.setDonor(donor, true)
+            return {x: tag._x, y: tag._y}
+        })
+    }
+
     clear() {
         this.tags.forEach(t => t.clear())
     }
 
     loadNext() {
-        DonorLoader.fetchDonors(horizontalCapacity * verticalCapacity).then(
-            ({results}) => this.render(results)
-        )
+        return DonorLoader.fetchDonors(horizontalCapacity * verticalCapacity)
+            .then(({results}) => this.render(results))
     }
 
     render(donors) {

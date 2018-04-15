@@ -199,6 +199,7 @@ render(
 
 const donorsPromise = DonorLoader.fetchDonors(verticalCapacity * horizontalCapacity * GRID_RANK * GRID_RANK)
 const grid = new Grid()
+Context.setGrid(grid)
 
 const size = verticalCapacity * horizontalCapacity
 donorsPromise.then(({count, results}) => {

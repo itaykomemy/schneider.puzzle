@@ -67,6 +67,15 @@ export default class Grid {
         }
     }
 
+    selectDonor(donor) {
+        const centerframe = this._frames[2][2]
+        const {x, y} = centerframe.getPosition()
+        centerframe.selectDonor(donor)
+            .then(({x: tagx, y: tagy}) => {
+                Context.getStage().setTransform(-x, -y)
+            })
+    }
+
     switchFrames(i1, j1, i2, j2, loadNext = true) {
         const f1 = this._frames[i1][j1]
         const f2 = this._frames[i2][j2]

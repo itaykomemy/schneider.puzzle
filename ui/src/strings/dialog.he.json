@@ -1,5 +1,6 @@
 {
   "welcome": "שלום וברוכים הבאים",
   "search": "חפש",
-  "inputPlaceholder": "הקלידו את מספר הפזל שלכם"
+  "inputPlaceholder": "הקלידו את מספר הפזל שלכם",
+  "notfound": "לא נמצא "
 }

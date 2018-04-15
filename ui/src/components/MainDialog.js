@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 
 import styled from 'styled-components'
+import {fetchDonorBySerial} from '../api'
+import * as Context from '../canvas/Context'
 import Button from './Button'
 import Input from './Input'
 
@@ -10,12 +12,30 @@ class MainDialog extends Component {
     static propTypes = {}
     static defaultProps = {}
 
+    constructor() {
+        super()
+        this.state = {}
+    }
+
     componentDidMount() {
         this.input.focus()
     }
 
     onSubmit = (e) => {
         e.preventDefault()
+        this.setState({error: null})
+        fetchDonorBySerial(this.input.value)
+            .then((res) => {
+                if (res.status === 200) {
+                    this.setState({error: null})
+                    res.json().then(donor => {
+                        Context.getGrid().selectDonor(donor)
+                        this.props.onClose()
+                    })
+                } else {
+                    this.setState({error: this.input.value})
+                }
+            })
     }
 
     onClose = (e) => {
@@ -42,6 +62,9 @@ class MainDialog extends Component {
                                 name="serial"
                                 placeholder={strings.inputPlaceholder}
                                 autofocus/>
+                        </section>
+                        <section>
+                            {this.state.error && <span>{this.state.error} {strings.notfound}</span>}
                         </section>
                         <section style={{"textAlign": "center"}}>
                             <Button raised>{strings.search}</Button>
