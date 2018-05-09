@@ -15,21 +15,22 @@ class Donor(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     serial = models.CharField(max_length=100, unique=True, db_index=True)
-    order0 = models.BigIntegerField(default=get_random_order)
-    order1 = models.BigIntegerField(default=get_random_order)
-    order2 = models.BigIntegerField(default=get_random_order)
-    order3 = models.BigIntegerField(default=get_random_order)
+    order0 = models.BigIntegerField(default=get_random_order)    
+    position_x = models.IntegerField(
+        blank=False, null=False, db_index=True, default=0)
+    position_y = models.IntegerField(
+        blank=False, null=False, db_index=True, default=0)
     date_added = models.DateTimeField(auto_now=True)
 
-    def get_order_column_name(self, num=0):
-        return 'order' + (num % 4)
+    class Meta:
+        unique_together = (('position_x', 'position_y'),)
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 
 
 class DonorAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'serial')
+    list_display = ('first_name', 'last_name', 'position_x', 'position_y', 'serial')
 
 
 admin.site.register(Donor, DonorAdmin)

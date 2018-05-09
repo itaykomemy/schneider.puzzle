@@ -14,7 +14,7 @@ def index(request):
 
 
 class GetDonorsPaginated(ListAPIView):
-    queryset = Donor.objects.all().order_by('order1')
+    queryset = Donor.objects.all().order_by('order0')
     serializer_class = DonorSerializer
     pagination_class = LimitOffsetPagination
 
