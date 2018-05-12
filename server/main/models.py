@@ -15,7 +15,7 @@ class Donor(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     serial = models.CharField(max_length=100, unique=True, db_index=True)
-    order0 = models.BigIntegerField(default=get_random_order)    
+    order0 = models.BigIntegerField(default=get_random_order)
     position_x = models.IntegerField(
         blank=False, null=False, db_index=True, default=0)
     position_y = models.IntegerField(
@@ -30,7 +30,8 @@ class Donor(models.Model):
 
 
 class DonorAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'position_x', 'position_y', 'serial')
+    list_display = ('first_name', 'last_name', 'position_x',
+                    'position_y', 'serial', 'date_added')
 
 
 admin.site.register(Donor, DonorAdmin)
@@ -42,5 +43,7 @@ class DonorSerializer(serializers.BaseSerializer):
             'id': obj.id,
             'firstName': obj.first_name,
             'lastName': obj.last_name,
+            'x': obj.position_x,
+            'y': obj.position_y,
             'serial': obj.serial
         }
