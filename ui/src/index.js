@@ -73,7 +73,7 @@ function onDragMove(event) {
         tsprite.tilePosition.x -= dx
         tsprite.tilePosition.y -= dy
 
-        frame.addDelta(dx, dy)
+        frame.addDelta(-dx, -dy)
     }
 }
 
