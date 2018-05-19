@@ -6,6 +6,7 @@ import App from './App'
 import * as Context from './canvas/Context'
 import {JigsawWidth, PuzzleHeight, PuzzleWidth} from './constants'
 import * as Vincent from "./canvas/Vincent";
+import Frame from "./canvas/Frame";
 
 injectGlobal`
   body {
@@ -64,16 +65,15 @@ function onDragMove(event) {
         const x = event.data.originalEvent.screenX,
             y = event.data.originalEvent.screenY
 
-        const mouseDistanceX = this.startX - x
-        const mouseDistanceY = this.startY - y
+        const dx = this.startX - x
+        const dy = this.startY - y
         this.startX = x
         this.startY = y
 
-        const newstagex = tsprite.tilePosition.x - mouseDistanceX
-        const newstagey = tsprite.tilePosition.y - mouseDistanceY
+        tsprite.tilePosition.x -= dx
+        tsprite.tilePosition.y -= dy
 
-        tsprite.tilePosition.x = newstagex
-        tsprite.tilePosition.y = newstagey
+        frame.addDelta(dx, dy)
     }
 }
 
@@ -110,12 +110,17 @@ tsprite.y = 0
 app.stage.addChild(tsprite)
 app.stage.hitArea = new PIXI.Rectangle(0, 0, app.stage.width, app.stage.height)
 
+const frame = new Frame(app.stage, 30, 15)
+
 const xspeed = 2
 const yspeed = 1.5
 
 app.ticker.add(function (time) {
     if (animate) {
-        tsprite.tilePosition.x += time * xspeed
-        tsprite.tilePosition.y += time * yspeed
+        const dx = time * xspeed;
+        const dy = time * yspeed;
+        tsprite.tilePosition.x += dx
+        tsprite.tilePosition.y += dy
+        frame.addDelta(dx, dy)
     }
 })

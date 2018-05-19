@@ -13,14 +13,14 @@ import {TextTag} from './TextTag'
 import * as DonorLoader from '../DonorLoader'
 
 export default class Frame {
-    constructor(zerox, zeroy) {
+    constructor(container, zerox, zeroy) {
+        this.parent = container
         this.zerox = zerox
         this.zeroy = zeroy
         this.container = new PIXI.Container()
         this.container.x = zerox
         this.container.y = zeroy
         this.tags = []
-        const stage = Context.getStage()
         for (let i = 0; i < horizontalCapacity; i++) {
             for (let j = 0; j < verticalCapacity; j++) {
                 this.tags.push(
@@ -31,7 +31,7 @@ export default class Frame {
                     ))
             }
         }
-        stage.addChild(this.container)
+        this.parent.addChild(this.container)
 
         if (DEBUG) {
             const t = new TextTag(0, 0, this.container)
@@ -49,6 +49,11 @@ export default class Frame {
     setPosition(x, y) {
         this.container.x = x
         this.container.y = y
+    }
+
+    addDelta(dx, dy) {
+        this.container.x += dx
+        this.container.y += dy
     }
 
     moveDonorsToFrame(recepientFrame) {

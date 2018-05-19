@@ -47,9 +47,9 @@ export class TextTag {
             }, 5000)
         }
 
-        const {firstName, lastName, serial} = donor
+        const {firstName, lastName} = donor
         this.donor = donor
-        this.textObject.text = `${firstName} ${lastName}\n${serial}`
+        this.textObject.text = `${firstName} ${lastName}`
 
         this.textObject.style = selected ? selectedTextStyle : normalTextStyle
 
