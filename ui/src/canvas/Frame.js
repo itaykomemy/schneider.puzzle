@@ -4,38 +4,30 @@ import {
     PuzzleHeight,
     PuzzleWidth
 } from '../constants'
-import * as Context from './Context'
-import {
-    horizontalCapacity,
-    verticalCapacity
-} from './Context'
+import {getEdgeOrBoundry} from '../utils'
+
 import {TextTag} from './TextTag'
 import * as DonorLoader from '../DonorLoader'
 
+
 export default class Frame {
-    constructor(container, zerox, zeroy) {
+    constructor(container, zerox, zeroy, numRows, numCols, topLeft, boundries) {
         this.parent = container
+        this.acc = {dx: 0, dy: 0}
         this.zerox = zerox
         this.zeroy = zeroy
+        this.numRows = numRows
+        this.numCols = numCols
         this.container = new PIXI.Container()
         this.container.x = zerox
         this.container.y = zeroy
-        this.tags = []
-        for (let i = 0; i < horizontalCapacity; i++) {
-            for (let j = 0; j < verticalCapacity; j++) {
-                this.tags.push(
-                    new TextTag(
-                        PuzzleWidth * i + PuzzleWidth / 2,
-                        PuzzleHeight * j + PuzzleHeight / 2,
-                        this.container
-                    ))
-            }
-        }
+        this.topLeft = topLeft
+        this.boundries = boundries
         this.parent.addChild(this.container)
+        this.load()
 
         if (DEBUG) {
-            const t = new TextTag(0, 0, this.container)
-            t.setText(`Frame ${this.zerox} ${this.zeroy}`)
+            this.debugt = new TextTag(0, 0, this.container)
         }
     }
 
@@ -54,42 +46,75 @@ export default class Frame {
     addDelta(dx, dy) {
         this.container.x += dx
         this.container.y += dy
+
+        const dxBefore = this.acc.dx
+        this.acc.dx -= dx
+
+        const xSignAfter = this.acc.dx / Math.abs(this.acc.dx)
+        const xSignBefore = dxBefore / Math.abs(dxBefore)
+
+        if (xSignBefore !== xSignAfter) {
+            this.topLeft[0] += xSignAfter
+        } else if (Math.abs(this.acc.dx) / PuzzleWidth >= 1) {
+            this.topLeft[0] += Math.trunc(this.acc.dx / PuzzleWidth)
+            this.acc.dx %= PuzzleWidth
+        }
+
+        const dyBefore = this.acc.dy
+        this.acc.dy -= dy
+
+        const ySignAfter = this.acc.dy / Math.abs(this.acc.dy)
+        const ySignBefore = dyBefore / Math.abs(dyBefore)
+
+        if (ySignBefore !== ySignAfter) {
+            this.topLeft[1] += ySignAfter
+        } else if (Math.abs(this.acc.dy) / PuzzleHeight >= 1) {
+            this.topLeft[1] += Math.trunc(this.acc.dy / PuzzleHeight)
+            this.acc.dy %= PuzzleHeight
+        }
+
+        if (DEBUG) {
+            this.debugt.setText(`${this.topLeft[0]}, ${this.topLeft[1]}`)
+            this.debugt.textObject.x -= dx
+            this.debugt.textObject.y -= dy
+        }
     }
 
-    moveDonorsToFrame(recepientFrame) {
-        recepientFrame.render(this.data)
-        this.clear()
-    }
-
-    selectDonor(donor) {
-        const baseIndex = verticalCapacity * horizontalCapacity / 2
-        const vrand = Math.ceil(4 * Math.random() - 2)
-        const hrand = Math.ceil(4 * Math.random() - 2)
-        const index = Math.floor(baseIndex + vrand + (verticalCapacity * hrand))
-        const tag = this.tags[index]
-
-        return this.loadNext().then(() => {
-            tag.setDonor(donor, true)
-            return {x: tag._x, y: tag._y}
-        })
+    addTopLeft(dx, dy) {
+        this.topLeft[0] += dx
+        this.topLeft[1] += dy
     }
 
     clear() {
         this.tags.forEach(t => t.clear())
     }
 
-    loadNext() {
-        return DonorLoader.fetchDonors(horizontalCapacity * verticalCapacity)
-            .then(({results}) => this.render(results))
+    _getLeftCoord() {
+        return getEdgeOrBoundry(this.topLeft[0], 0, this.boundries[3])
+    }
+
+    _getRightCoord() {
+        return getEdgeOrBoundry(this.topLeft[0], this.numCols, this.boundries[1])
+    }
+
+    _getTopCoord() {
+        return getEdgeOrBoundry(this.topLeft[1], 0, this.boundries[0])
+    }
+
+    _getBottomCoord() {
+        return getEdgeOrBoundry(this.topLeft[1], this.numRows, this.boundries[2])
+    }
+
+    load() {
+        return DonorLoader.fetchDonors(
+            this._getLeftCoord(),
+            this._getRightCoord(),
+            this._getTopCoord(),
+            this._getBottomCoord()
+        ).then(donors => this.render(donors))
     }
 
     render(donors) {
-        this.data = donors
-        donors.forEach((donor, i) => {
-            const tag = this.tags[i]
-            if (tag) {
-                tag.setDonor(donor)
-            }
-        })
+
     }
 }

@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 
 import styled from 'styled-components'
 import {fetchDonorBySerial} from '../api'
-import * as Context from '../canvas/Context'
 import Button from './Button'
 import Input from './Input'
 
@@ -29,7 +28,7 @@ class MainDialog extends Component {
                 if (res.status === 200) {
                     this.setState({error: null})
                     res.json().then(donor => {
-                        Context.getGrid().selectDonor(donor)
+                        // TODO: SELECT DONOR
                         this.props.onClose()
                     })
                 } else {
