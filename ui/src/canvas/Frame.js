@@ -54,9 +54,9 @@ export default class Frame {
         const xSignBefore = dxBefore / Math.abs(dxBefore)
 
         if (xSignBefore !== xSignAfter) {
-            this.topLeft[0] += xSignAfter
+            this._addTopLeft(xSignAfter, 0)
         } else if (Math.abs(this.acc.dx) / PuzzleWidth >= 1) {
-            this.topLeft[0] += Math.trunc(this.acc.dx / PuzzleWidth)
+            this._addTopLeft(Math.trunc(this.acc.dx / PuzzleWidth), 0)
             this.acc.dx %= PuzzleWidth
         }
 
@@ -67,9 +67,9 @@ export default class Frame {
         const ySignBefore = dyBefore / Math.abs(dyBefore)
 
         if (ySignBefore !== ySignAfter) {
-            this.topLeft[1] += ySignAfter
+            this._addTopLeft(0, ySignAfter)
         } else if (Math.abs(this.acc.dy) / PuzzleHeight >= 1) {
-            this.topLeft[1] += Math.trunc(this.acc.dy / PuzzleHeight)
+            this._addTopLeft(0, Math.trunc(this.acc.dy / PuzzleHeight))
             this.acc.dy %= PuzzleHeight
         }
 
@@ -80,7 +80,7 @@ export default class Frame {
         }
     }
 
-    addTopLeft(dx, dy) {
+    _addTopLeft(dx, dy) {
         this.topLeft[0] += dx
         this.topLeft[1] += dy
     }
