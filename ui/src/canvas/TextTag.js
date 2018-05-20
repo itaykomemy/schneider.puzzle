@@ -22,6 +22,8 @@ export class TextTag {
         this._y = y
 
         this.textObject = new PIXI.Text("")
+        this.textObject.x = x
+        this.textObject.y = y
         container.addChild(this.textObject)
         this.unselectTimeout = null
     }
