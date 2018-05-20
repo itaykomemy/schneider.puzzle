@@ -54,8 +54,8 @@ render(
     document.getElementById('app'),
 )
 
-const NUM_ROWS = 21
-const NUM_COLS = 21
+const NUM_ROWS = 11
+const NUM_COLS = 11
 
 const v = new Vincent.VanGauche(PuzzleWidth, PuzzleHeight, JigsawWidth)
 const c = new PIXI.Container()

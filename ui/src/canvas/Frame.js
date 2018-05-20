@@ -5,6 +5,7 @@ import {
     PuzzleWidth
 } from '../constants'
 import {getEdgeOrBoundry} from '../utils'
+import Matrix from './Matrix'
 
 import {TextTag} from './TextTag'
 import * as DonorLoader from '../DonorLoader'
@@ -24,6 +25,27 @@ export default class Frame {
         this.topLeft = topLeft
         this.boundries = boundries
         this.parent.addChild(this.container)
+        // this.matrix = new Matrix(numCols, numRows,
+        //     (i, j) => new TextTag(
+        //         this.zerox + j + PuzzleWidth,
+        //         this.zeroy + i + PuzzleHeight,
+        //         this.container
+        //     )
+        // )
+        this.matrix = new Matrix(numCols, numRows,
+            (i, j) => {
+                const x = this.zerox + j * PuzzleWidth
+                const y = this.zeroy + i * PuzzleHeight
+                const tt = new TextTag(
+                    x,
+                    y,
+                    this.container
+                )
+                tt.setText(`${i}, ${j}`)
+                return tt
+            }
+        )
+
         this.load()
 
         if (DEBUG) {
