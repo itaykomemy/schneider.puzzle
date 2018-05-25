@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 import React from 'react'
 import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
+import * as api from './api'
 import {fetchMetaData} from './api'
 import App from './App'
 import Frame from "./canvas/Frame"
@@ -54,8 +55,8 @@ render(
     document.getElementById('app'),
 )
 
-const NUM_ROWS = 11
-const NUM_COLS = 11
+const NUM_ROWS = 15
+const NUM_COLS = 15
 
 const v = new Vincent.VanGauche(PuzzleWidth, PuzzleHeight, JigsawWidth)
 const c = new PIXI.Container()
@@ -82,12 +83,15 @@ async function start() {
         y: {min: minY, max: maxY}
     } = await fetchMetaData()
 
+    const donors = await api.fetchDonors(minX, maxX, minY, maxY)
+
     const frame = new Frame(
         app.stage,
-        30, 15,
+        30 -PuzzleWidth * 2, 15-PuzzleHeight * 2,
         NUM_ROWS, NUM_COLS,
         [Math.floor((minX + maxX) / 2), Math.floor((minY + maxY) / 2)],
-        [minY, maxX, maxY, minX]
+        [minY, maxX, maxY, minX],
+        donors
     )
 
     function onDragStart(event) {
@@ -133,8 +137,8 @@ async function start() {
 
     app.ticker.add(function (time) {
         if (animate) {
-            const dx = time * xspeed
-            const dy = time * yspeed
+            const dx = time * -xspeed
+            const dy = time * -yspeed
             tsprite.tilePosition.x += dx
             tsprite.tilePosition.y += dy
             frame.addDelta(dx, dy)

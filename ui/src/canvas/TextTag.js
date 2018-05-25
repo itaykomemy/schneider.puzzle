@@ -17,11 +17,11 @@ const normalTextStyle = new PIXI.TextStyle({
 
 
 export class TextTag {
-    constructor(x, y, container) {
+    constructor(x, y, container, text="") {
         this._x = x
         this._y = y
 
-        this.textObject = new PIXI.Text("")
+        this.textObject = new PIXI.Text(text)
         this.textObject.x = x
         this.textObject.y = y
         container.addChild(this.textObject)
@@ -35,6 +35,10 @@ export class TextTag {
     clear() {
         this.textObject.text = ''
         this.donor = null
+    }
+
+    getPosition() {
+        return {x: this.textObject.x, y: this.textObject.y}
     }
 
     getDonor() {

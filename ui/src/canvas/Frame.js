@@ -1,18 +1,18 @@
 import * as PIXI from 'pixi.js'
+import * as api from '../api'
 import {DEBUG} from '../Config'
 import {
     PuzzleHeight,
     PuzzleWidth
 } from '../constants'
 import {getEdgeOrBoundry} from '../utils'
-import Matrix from './Matrix'
+import Matrix, {range} from './Matrix'
 
 import {TextTag} from './TextTag'
-import * as DonorLoader from '../DonorLoader'
 
 
 export default class Frame {
-    constructor(container, zerox, zeroy, numRows, numCols, topLeft, boundries) {
+    constructor(container, zerox, zeroy, numRows, numCols, topLeft, boundries, initialData = []) {
         this.parent = container
         this.acc = {dx: 0, dy: 0}
         this.zerox = zerox
@@ -25,28 +25,20 @@ export default class Frame {
         this.topLeft = topLeft
         this.boundries = boundries
         this.parent.addChild(this.container)
-        // this.matrix = new Matrix(numCols, numRows,
-        //     (i, j) => new TextTag(
-        //         this.zerox + j + PuzzleWidth,
-        //         this.zeroy + i + PuzzleHeight,
-        //         this.container
-        //     )
-        // )
         this.matrix = new Matrix(numCols, numRows,
             (i, j) => {
-                const x = this.zerox + j * PuzzleWidth
-                const y = this.zeroy + i * PuzzleHeight
-                const tt = new TextTag(
-                    x,
-                    y,
-                    this.container
+                const d = initialData.find(d => d.x === j && d.y === i)
+                const name = d ? `${d.firstName} ${d.lastName}` : ""
+                return new TextTag(
+                    this.zerox + j * PuzzleWidth,
+                    this.zeroy + i * PuzzleHeight,
+                    this.container,
+                    name
                 )
-                tt.setText(`${i}, ${j}`)
-                return tt
             }
         )
 
-        this.load()
+        this.donors = initialData
 
         if (DEBUG) {
             this.debugt = new TextTag(0, 0, this.container)
@@ -105,6 +97,22 @@ export default class Frame {
     _addTopLeft(dx, dy) {
         this.topLeft[0] += dx
         this.topLeft[1] += dy
+
+        if (dx !== 0) {
+            if (dx > 0) {
+                this.matrix.onScrollRight(dx)
+            } else {
+                this.matrix.onScrollLeft(-dx)
+            }
+        }
+
+        if (dy !== 0) {
+            if (dy > 0) {
+                this.matrix.onScrollDown(dy)
+            } else {
+                this.matrix.onScrollUp(-dy)
+            }
+        }
     }
 
     clear() {
@@ -125,18 +133,5 @@ export default class Frame {
 
     _getBottomCoord() {
         return getEdgeOrBoundry(this.topLeft[1], this.numRows, this.boundries[2])
-    }
-
-    load() {
-        return DonorLoader.fetchDonors(
-            this._getLeftCoord(),
-            this._getRightCoord(),
-            this._getTopCoord(),
-            this._getBottomCoord()
-        ).then(donors => this.render(donors))
-    }
-
-    render(donors) {
-
     }
 }
