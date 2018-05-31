@@ -37,7 +37,7 @@ class GetDonors(ListAPIView):
 
         return self.queryset.filter(
             position_x__gte=x0, position_x__lte=x1,
-            position_y__gte=y0, position_y__lte=y0
+            position_y__gte=y0, position_y__lte=y1
         )
 
 
