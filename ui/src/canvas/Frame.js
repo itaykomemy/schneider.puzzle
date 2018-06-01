@@ -28,8 +28,8 @@ export default class Frame {
             (i, j) => {
                 const d = initialData.find(d => d.x === j + topLeft.x && d.y === i + topLeft.y)
                 const tag = new TextTag(
-                    this.zerox + j * PuzzleWidth,
-                    this.zeroy + i * PuzzleHeight,
+                    this.zerox + j * PuzzleWidth, //+ PuzzleWidth / 2,
+                    this.zeroy + i * PuzzleHeight, //+ PuzzleHeight / 2,
                     this.container
                 )
                 tag.setDonor(d)
@@ -38,7 +38,7 @@ export default class Frame {
         )
 
         if (DEBUG) {
-            this.debugt = new TextTag(0, 0, this.container)
+            this.debugt = new TextTag(this.zerox, this.zeroy, this.container)
         }
     }
 
@@ -86,8 +86,7 @@ export default class Frame {
 
         if (DEBUG) {
             this.debugt.setText(`${this.topLeft.x}, ${this.topLeft.y}`)
-            this.debugt.textObject.x -= dx
-            this.debugt.textObject.y -= dy
+            this.debugt.changePositionBy(-dx, -dy)
         }
     }
 

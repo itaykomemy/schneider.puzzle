@@ -75,7 +75,7 @@ app.stage.hitArea = new PIXI.Rectangle(0, 0, app.stage.width, app.stage.height)
 async function start() {
     const xspeed = 2
     const yspeed = 1.5
-    let animate = true
+    let animate = false
 
     const {
         x: {min: minX, max: maxX},
@@ -92,7 +92,7 @@ async function start() {
 
     const frame = new Frame(
         app.stage,
-        30 - PuzzleWidth * 2, 15 - PuzzleHeight * 2,
+        10 - PuzzleWidth * 2 + (PuzzleWidth / 4), 10 - (PuzzleHeight * 2) + (PuzzleHeight / 4),
         NUM_ROWS, NUM_COLS,
         topLeft,
         [minY, maxX, maxY, minX],

@@ -1,10 +1,21 @@
-import {PuzzleHeight, PuzzleWidth} from "../constants"
+import {
+    PuzzleHeight,
+    PuzzleWidth
+} from "../constants"
 import Matrix from "./Matrix"
-import MockTextTag from "./MockTextTag"
 
 const MAT_H = 5,
     MAT_W = 5
 
+export default class MockTextTag {
+    constructor(x, y, container, text) {
+        this.textObject = {x, y, text}
+    }
+
+    getPosition() {
+        return {x: this.textObject.x, y: this.textObject.y}
+    }
+}
 describe('matrix', function() {
     const getTopLeftPosition = () => {
         return {
@@ -12,12 +23,6 @@ describe('matrix', function() {
             y: this.matrix.getRow(0)[0].getPosition().y
         }
     }
-
-    // const getBottomRightPosition = () => {
-    //     const lastRow = this.matrix.rowsCount - 1
-    //     const lastCol = this.matrix.colsCount-1
-    //     return this.matrix.getRow(lastRow)[lastCol].getPosition()
-    // }
 
     beforeEach(() => {
         this.container = {addChild: () => {}}

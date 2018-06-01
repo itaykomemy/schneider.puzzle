@@ -41,7 +41,11 @@ export default class Matrix {
         }
         const {y} = this.getRow(0)[0].getPosition()
         this._move(0, -steps)
-        lastRows.forEach((row, index) => row.forEach(tag => tag.textObject.y = y - PuzzleHeight * (index + 1)))
+        lastRows.forEach(
+            (row, index) => row.forEach(tag =>
+                tag.setPosition(undefined, y - PuzzleHeight * (index + 1))
+            )
+        )
         return lastRows
     }
 
@@ -53,7 +57,10 @@ export default class Matrix {
         const {x} = this.getColumn(this.colsCount - 1)[0].getPosition()
         this._move(steps, 0)
         firstColumns.forEach(
-            (col, index) => col.forEach(tag => tag.textObject.x = x + PuzzleWidth * (index + 1)))
+            (col, index) => col.forEach(tag =>
+                tag.setPosition(x + PuzzleWidth * (index + 1))
+            )
+        )
         return firstColumns
     }
 
@@ -65,7 +72,9 @@ export default class Matrix {
         const {y} = this.getRow(this.rowsCount - 1)[0].getPosition()
         this._move(0, steps)
         firstRows.forEach(
-            (row, index) => row.forEach(tag => tag.textObject.y = y + PuzzleHeight * (index + 1))
+            (row, index) => row.forEach(tag =>
+                tag.setPosition(undefined, y + PuzzleHeight * (index + 1))
+            )
         )
         return firstRows
     }
@@ -78,7 +87,9 @@ export default class Matrix {
         const {x} = this.getColumn(0)[0].getPosition()
         this._move(-steps, 0)
         lastColumns.forEach(
-            (col, index) => col.forEach(tag => tag.textObject.x = x - PuzzleWidth * (index + 1))
+            (col, index) => col.forEach(tag =>
+                tag.setPosition(x - PuzzleWidth * (index + 1))
+            )
         )
         return lastColumns
     }

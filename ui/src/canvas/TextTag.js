@@ -23,27 +23,47 @@ export class TextTag {
         this._y = y
 
         this.textObject = new PIXI.Text(text)
-        this.textObject.x = x
-        this.textObject.y = y
         container.addChild(this.textObject)
         this.unselectTimeout = null
+        this._onTextChange()
     }
 
     setText(text) {
         this.textObject.text = text
+        this._onTextChange()
     }
 
     clear() {
         this.textObject.text = ''
         this.donor = null
+        this.onTouchEnd = {}
     }
 
     getPosition() {
-        return {x: this.textObject.x, y: this.textObject.y}
+        return {x: this._x, y: this._y}
+    }
+
+    setPosition(x , y) {
+        if (x !== undefined)
+            this._x = x
+        if (y !== undefined)
+            this._y = y
+        this._onTextChange()
+    }
+
+    changePositionBy(dx, dy) {
+        this._x += dx
+        this._y += dy
+        this._onTextChange()
     }
 
     getDonor() {
         return this.donor
+    }
+
+    _onTextChange() {
+        this.textObject.x = this._x - this.textObject.width / 2
+        this.textObject.y = this._y - this.textObject.height / 2
     }
 
     setDonor(donor, selected = false) {
@@ -56,7 +76,8 @@ export class TextTag {
 
         if (!donor) {
             this.donor = donor
-            this.textObject.text = 'Empty'
+            this.textObject.text = ''
+            this._onTextChange()
             return
         }
 
@@ -74,9 +95,6 @@ export class TextTag {
         }
 
         this.textObject.style = selected ? selectedTextStyle : normalTextStyle
-
-        // TODO: align text in the middle of the puzzle piece
-        // this.textObject.x = this._x - this.textObject.width / 2
-        // this.textObject.y = this._y - this.textObject.height / 2
+        this._onTextChange()
     }
 }
