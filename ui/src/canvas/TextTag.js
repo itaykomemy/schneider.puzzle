@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import {DEBUG} from '../Config'
 import {FontSize} from '../constants'
 
 
@@ -53,13 +54,29 @@ export class TextTag {
             }, 5000)
         }
 
-        const {firstName, lastName} = donor
+        if (!donor) {
+            this.donor = donor
+            this.textObject.text = 'Empty'
+            return
+        }
+
         this.donor = donor
-        this.textObject.text = `${firstName} ${lastName}`
+
+        if (donor) {
+            const {firstName, lastName} = donor
+            if (DEBUG) {
+                this.textObject.text = `${firstName} ${lastName}\n${donor.y}, ${donor.x}`
+            } else {
+                this.textObject.text = `${firstName} ${lastName}`
+            }
+        } else {
+            this.textObject.text = ''
+        }
 
         this.textObject.style = selected ? selectedTextStyle : normalTextStyle
 
-        this.textObject.x = this._x - this.textObject.width / 2
-        this.textObject.y = this._y - this.textObject.height / 2
+        // TODO: align text in the middle of the puzzle piece
+        // this.textObject.x = this._x - this.textObject.width / 2
+        // this.textObject.y = this._y - this.textObject.height / 2
     }
 }

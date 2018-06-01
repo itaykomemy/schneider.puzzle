@@ -5,8 +5,7 @@ import {
     PuzzleHeight,
     PuzzleWidth
 } from '../constants'
-import {getEdgeOrBoundry} from '../utils'
-import Matrix, {range} from './Matrix'
+import Matrix from './Matrix'
 
 import {TextTag} from './TextTag'
 
@@ -27,18 +26,16 @@ export default class Frame {
         this.parent.addChild(this.container)
         this.matrix = new Matrix(numCols, numRows,
             (i, j) => {
-                const d = initialData.find(d => d.x === j && d.y === i)
-                const name = d ? `${d.firstName} ${d.lastName}` : ""
-                return new TextTag(
+                const d = initialData.find(d => d.x === j + topLeft.x && d.y === i + topLeft.y)
+                const tag = new TextTag(
                     this.zerox + j * PuzzleWidth,
                     this.zeroy + i * PuzzleHeight,
-                    this.container,
-                    name
+                    this.container
                 )
+                tag.setDonor(d)
+                return tag
             }
         )
-
-        this.donors = initialData
 
         if (DEBUG) {
             this.debugt = new TextTag(0, 0, this.container)
@@ -88,50 +85,60 @@ export default class Frame {
         }
 
         if (DEBUG) {
-            this.debugt.setText(`${this.topLeft[0]}, ${this.topLeft[1]}`)
+            this.debugt.setText(`${this.topLeft.x}, ${this.topLeft.y}`)
             this.debugt.textObject.x -= dx
             this.debugt.textObject.y -= dy
         }
     }
 
+    populateCol(col, colNum) {
+        api.fetchDonors(colNum, colNum, this.topLeft.y, this.topLeft.y + this.numRows)
+            .then(donors => {
+                    col.forEach(
+                        (tag, index) => {
+                            const donor = donors.find(d => d.y === this.topLeft.y + index)
+                            tag.setDonor(donor)
+                        }
+                    )
+                }
+            )
+    }
+
+    populateRow(row, rowNum) {
+        api.fetchDonors(this.topLeft.x, this.topLeft.x + this.numCols, rowNum, rowNum)
+            .then(donors => {
+                row.forEach(
+                    (tag, index) => {
+                        const donor = donors.find(d => d.x === this.topLeft.x + index)
+                        tag.setDonor(donor)
+                    }
+                )
+            })
+    }
+
     _addTopLeft(dx, dy) {
-        this.topLeft[0] += dx
-        this.topLeft[1] += dy
+        this.topLeft.x += dx
+        this.topLeft.y += dy
 
         if (dx !== 0) {
             if (dx > 0) {
-                this.matrix.onScrollRight(dx)
+                const cols = this.matrix.onScrollRight(dx)
+                cols.forEach((col, index) => this.populateCol(col, this.topLeft.x + this.numCols + index))
+
             } else {
-                this.matrix.onScrollLeft(-dx)
+                const cols = this.matrix.onScrollLeft(-dx)
+                cols.forEach((col, index) => this.populateCol(col, this.topLeft.x - index))
             }
         }
 
         if (dy !== 0) {
             if (dy > 0) {
-                this.matrix.onScrollDown(dy)
+                const rows = this.matrix.onScrollDown(dy)
+                rows.forEach((row, index) => this.populateRow(row, this.topLeft.y + this.numRows + index))
             } else {
-                this.matrix.onScrollUp(-dy)
+                const rows = this.matrix.onScrollUp(-dy)
+                rows.forEach((row, index) => this.populateRow(row, this.topLeft.y + index))
             }
         }
-    }
-
-    clear() {
-        this.tags.forEach(t => t.clear())
-    }
-
-    _getLeftCoord() {
-        return getEdgeOrBoundry(this.topLeft[0], 0, this.boundries[3])
-    }
-
-    _getRightCoord() {
-        return getEdgeOrBoundry(this.topLeft[0], this.numCols, this.boundries[1])
-    }
-
-    _getTopCoord() {
-        return getEdgeOrBoundry(this.topLeft[1], 0, this.boundries[0])
-    }
-
-    _getBottomCoord() {
-        return getEdgeOrBoundry(this.topLeft[1], this.numRows, this.boundries[2])
     }
 }

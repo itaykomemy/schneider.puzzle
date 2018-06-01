@@ -3,7 +3,6 @@ import React from 'react'
 import {render} from 'react-dom'
 import {injectGlobal} from 'styled-components'
 import * as api from './api'
-import {fetchMetaData} from './api'
 import App from './App'
 import Frame from "./canvas/Frame"
 import * as Vincent from "./canvas/Vincent"
@@ -81,15 +80,21 @@ async function start() {
     const {
         x: {min: minX, max: maxX},
         y: {min: minY, max: maxY}
-    } = await fetchMetaData()
+    } = await api.fetchMetaData()
 
-    const donors = await api.fetchDonors(minX, maxX, minY, maxY)
+
+    const topLeft = {
+        x: Math.floor((minX + maxX) / 2),
+        y: Math.floor((minY + maxY) / 2),
+    }
+
+    const donors = await api.fetchDonors(topLeft.x, topLeft.x + NUM_COLS, topLeft.y, topLeft.y + NUM_ROWS)
 
     const frame = new Frame(
         app.stage,
-        30 -PuzzleWidth * 2, 15-PuzzleHeight * 2,
+        30 - PuzzleWidth * 2, 15 - PuzzleHeight * 2,
         NUM_ROWS, NUM_COLS,
-        [Math.floor((minX + maxX) / 2), Math.floor((minY + maxY) / 2)],
+        topLeft,
         [minY, maxX, maxY, minX],
         donors
     )
