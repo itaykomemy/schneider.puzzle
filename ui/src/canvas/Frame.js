@@ -40,7 +40,7 @@ export default class Frame {
         )
 
         if (DEBUG) {
-            this.debugt = new TextTag(this.zerox, this.zeroy, this.container)
+            this.debugt = new TextTag(this.zerox + PuzzleWidth * 4, this.zeroy + PuzzleHeight * 4, this.container)
         }
     }
 

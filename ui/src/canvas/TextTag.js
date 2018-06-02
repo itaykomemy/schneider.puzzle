@@ -86,7 +86,7 @@ export class TextTag {
         if (donor) {
             const {firstName, lastName} = donor
             if (DEBUG) {
-                this.textObject.text = `${firstName} ${lastName}\n${donor.y}, ${donor.x}`
+                this.textObject.text = `${firstName} ${lastName}\n${donor.y}, ${donor.x}\n${donor.serial}`
             } else {
                 this.textObject.text = `${firstName} ${lastName}`
             }
