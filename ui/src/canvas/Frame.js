@@ -91,6 +91,7 @@ export default class Frame {
     }
 
     populateCol(col, colNum) {
+        col.forEach(t => t.clear())
         api.fetchDonors(colNum, colNum, this.topLeft.y, this.topLeft.y + this.numRows)
             .then(donors => {
                     col.forEach(
@@ -104,6 +105,7 @@ export default class Frame {
     }
 
     populateRow(row, rowNum) {
+        row.forEach(t => t.clear())
         api.fetchDonors(this.topLeft.x, this.topLeft.x + this.numCols, rowNum, rowNum)
             .then(donors => {
                 row.forEach(
