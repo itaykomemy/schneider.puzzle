@@ -61,8 +61,8 @@ export default class Frame {
         const dxBefore = this.acc.dx
         this.acc.dx -= dx
 
-        const xSignAfter = this.acc.dx / Math.abs(this.acc.dx)
-        const xSignBefore = dxBefore / Math.abs(dxBefore)
+        const xSignAfter = sign(this.acc.dx)
+        const xSignBefore = sign(dxBefore)
 
         if (xSignBefore !== xSignAfter) {
             this._addTopLeft(xSignAfter, 0)
@@ -74,8 +74,8 @@ export default class Frame {
         const dyBefore = this.acc.dy
         this.acc.dy -= dy
 
-        const ySignAfter = this.acc.dy / Math.abs(this.acc.dy)
-        const ySignBefore = dyBefore / Math.abs(dyBefore)
+        const ySignAfter = sign(this.acc.dy)
+        const ySignBefore = sign(dyBefore)
 
         if (ySignBefore !== ySignAfter) {
             this._addTopLeft(0, ySignAfter)
@@ -140,4 +140,8 @@ export default class Frame {
             }
         }
     }
+}
+
+const sign = x => {
+    return (x > 0 ? 1 : 0) + (x < 0 ? -1 : 0)
 }
