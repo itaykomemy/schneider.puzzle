@@ -72,10 +72,11 @@ tsprite.y = 0
 app.stage.addChild(tsprite)
 app.stage.hitArea = new PIXI.Rectangle(0, 0, app.stage.width, app.stage.height)
 
+let xspeed = 2
+let yspeed = 1.5
+
 async function start() {
-    const xspeed = 2
-    const yspeed = 1.5
-    let animate = false
+    let animate = true
 
     const {
         x: {min: minX, max: maxX},
@@ -95,7 +96,7 @@ async function start() {
         10 - PuzzleWidth * 2 + (PuzzleWidth / 4), 10 - (PuzzleHeight * 2) + (PuzzleHeight / 4),
         NUM_ROWS, NUM_COLS,
         topLeft,
-        [minY, maxX, maxY, minX],
+        {minY, maxX, maxY, minX},
         donors
     )
 
@@ -115,10 +116,18 @@ async function start() {
             const x = event.data.originalEvent.screenX,
                 y = event.data.originalEvent.screenY
 
-            const dx = this.startX - x
-            const dy = this.startY - y
+            let dx = this.startX - x
+            let dy = this.startY - y
             this.startX = x
             this.startY = y
+
+            if (!frame.checkBoundaryX(dx)) {
+                dx = 0
+            }
+
+            if (!frame.checkBoundaryY(dy)) {
+                dy = 0
+            }
 
             tsprite.tilePosition.x -= dx
             tsprite.tilePosition.y -= dy
@@ -142,8 +151,18 @@ async function start() {
 
     app.ticker.add(function (time) {
         if (animate) {
-            const dx = time * -xspeed
-            const dy = time * -yspeed
+            let dx = time * -xspeed
+            let dy = time * -yspeed
+            if (!frame.checkBoundaryX(-dx)) {
+                xspeed = -xspeed
+                dx = -dx
+            }
+
+            if (!frame.checkBoundaryY(-dy)) {
+                yspeed = -yspeed
+                dy = -dy
+            }
+
             tsprite.tilePosition.x += dx
             tsprite.tilePosition.y += dy
             frame.addDelta(dx, dy)

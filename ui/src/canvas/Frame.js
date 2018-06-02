@@ -10,6 +10,8 @@ import Matrix from './Matrix'
 import {TextTag} from './TextTag'
 
 
+const PUZZLE_SLACK = 8
+
 export default class Frame {
     constructor(container, zerox, zeroy, numRows, numCols, topLeft, boundries, initialData = []) {
         this.parent = container
@@ -52,6 +54,36 @@ export default class Frame {
     setPosition(x, y) {
         this.container.x = x
         this.container.y = y
+    }
+
+    checkBoundaryX(dx) {
+        if (!dx) {
+            return true
+        }
+
+        const dSign = sign(dx)
+        if (dSign > 0) {
+            return this.topLeft.x + this.numCols < this.boundries.maxX + PUZZLE_SLACK
+        }
+
+        if (dSign < 0) {
+            return this.topLeft.x > this.boundries.minX - PUZZLE_SLACK
+        }
+    }
+
+    checkBoundaryY(dy) {
+        if (!dy) {
+            return true
+        }
+
+        const dSign = sign(dy)
+        if (dSign > 0) {
+            return this.topLeft.y + this.numRows < this.boundries.maxY + PUZZLE_SLACK
+        }
+
+        if (dSign < 0) {
+            return this.topLeft.y > this.boundries.minY - PUZZLE_SLACK
+        }
     }
 
     addDelta(dx, dy) {
