@@ -28,8 +28,8 @@ export default class Frame {
             (i, j) => {
                 const d = initialData.find(d => d.x === j + topLeft.x && d.y === i + topLeft.y)
                 const tag = new TextTag(
-                    this.zerox + j * PuzzleWidth, //+ PuzzleWidth / 2,
-                    this.zeroy + i * PuzzleHeight, //+ PuzzleHeight / 2,
+                    this.zerox + j * PuzzleWidth,
+                    this.zeroy + i * PuzzleHeight,
                     this.container
                 )
                 tag.setDonor(d)
